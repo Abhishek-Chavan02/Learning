@@ -1,0 +1,85 @@
+import { useState } from 'react';
+
+export default function PerformanceTracker() {
+  const [performances, setPerformances] = useState({
+    Abhishek: { average: false, good: false, excellent: false },
+    John: { average: false, good: false, excellent: false }
+  });
+  
+  const handleCheckboxChange = (name, category) => {
+    setPerformances({
+      ...performances,
+      [name]: {
+        ...performances[name],
+        [category]: !performances[name][category]
+      }
+    });
+  };
+  
+  const getPerformanceSummary = (name) => {
+    const ratings = [];
+    if (performances[name].average) ratings.push("Average");
+    if (performances[name].good) ratings.push("Good");
+    if (performances[name].excellent) ratings.push("Excellent");
+    
+    if (ratings.length === 0) return "";
+    return `${name}'s performance is ${ratings.join(" and ")}`;
+  };
+  
+  return (
+    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md">
+      <h2 className="text-xl font-bold mb-4 text-center">Performance Tracker</h2>
+      
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2 text-left">Name</th>
+            <th className="border p-2 text-center">Average</th>
+            <th className="border p-2 text-center">Good</th>
+            <th className="border p-2 text-center">Excellent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(performances).map(name => (
+            <tr key={name} className="hover:bg-gray-50">
+              <td className="border p-2 font-medium">{name}</td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={performances[name].average}
+                  onChange={() => handleCheckboxChange(name, 'average')}
+                  className="w-4 h-4"
+                />
+              </td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={performances[name].good}
+                  onChange={() => handleCheckboxChange(name, 'good')}
+                  className="w-4 h-4"
+                />
+              </td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={performances[name].excellent}
+                  onChange={() => handleCheckboxChange(name, 'excellent')}
+                  className="w-4 h-4"
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      <div className="mt-6 p-4 bg-blue-50 rounded">
+        <h3 className="font-bold mb-2">Performance Summary:</h3>
+        {Object.keys(performances).map(name => (
+          <p key={`summary-${name}`} className="mb-1">
+            {getPerformanceSummary(name) || `No ratings selected for ${name}`}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
