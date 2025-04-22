@@ -1,0 +1,79 @@
+import { useState } from 'react';
+
+export default function SimplePerformanceTracker() {
+  const [selections, setSelections] = useState({
+    Abhishek: { average: false, good: false, excellent: false },
+    John: { average: false, good: false, excellent: false }
+  });
+  
+  const handleCheckbox = (name, level) => {
+    setSelections({
+      ...selections,
+      [name]: {
+        ...selections[name],
+        [level]: !selections[name][level]
+      }
+    });
+  };
+  
+  return (
+    <div className="p-4 max-w-md mx-auto">
+      <h2 className="text-lg font-bold mb-4">Performance Tracker</h2>
+      
+      <table className="w-full border">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Name</th>
+            <th className="border p-2">Average</th>
+            <th className="border p-2">Good</th>
+            <th className="border p-2">Excellent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(selections).map(name => (
+            <tr key={name}>
+              <td className="border p-2">{name}</td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={selections[name].average}
+                  onChange={() => handleCheckbox(name, 'average')}
+                />
+              </td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={selections[name].good}
+                  onChange={() => handleCheckbox(name, 'good')}
+                />
+              </td>
+              <td className="border p-2 text-center">
+                <input 
+                  type="checkbox"
+                  checked={selections[name].excellent}
+                  onChange={() => handleCheckbox(name, 'excellent')}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      <div className="mt-4">
+        {Object.entries(selections).map(([name, levels]) => {
+          const selected = Object.entries(levels)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([level]) => level);
+          
+          return (
+            <p key={name} className="mb-2">
+              {selected.length > 0 
+                ? `${name}'s performance: ${selected.join(', ')}`
+                : `No rating selected for ${name}`}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
